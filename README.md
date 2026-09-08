@@ -26,7 +26,7 @@ make test       # full test suite, deterministic and offline
 | P6 | Human-in-the-Loop Approval | ✅ working | Pause is a DB row, not an await; survives restart. Append-only audit. 29 tests. |
 | P7 | Cost-Aware Router | ⏳ building | Flagship |
 | P8 | Event-Triggered Automation | ⏳ building | — |
-| P9 | Multi-Agent Debate | ⏳ building | — |
+| P9 | Multi-Agent Debate | ✅ working | Independent proposers; a tie is reported as a tie. 20 tests. |
 | P10 | Self-Reflective Auto-Eval | ✅ working | Keeps the best attempt, not the last; logged improvement metrics. 24 tests. |
 | P11 | Production Observability | ⏳ building | Flagship; reads traces from P1–P10 |
 | P12 | OSS Framework Contribution | ⛔ skipped | Bonus only. Deliberately cut — see below. |
