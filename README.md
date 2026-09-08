@@ -24,7 +24,7 @@ make test       # full test suite, deterministic and offline
 | P4 | Multi-Tool Orchestrator | ✅ working | Scope enforced at invoke; deterministic conflict resolution. 32 tests. |
 | P5 | Memory-Enabled Agent | ✅ working | Durable facts with supersession; a corrected fact stops being retrievable. 23 tests. |
 | P6 | Human-in-the-Loop Approval | ✅ working | Pause is a DB row, not an await; survives restart. Append-only audit. 29 tests. |
-| P7 | Cost-Aware Router | ⏳ building | Flagship |
+| P7 | Cost-Aware Router | ✅ working | Break-even arithmetic; says plainly when routing does NOT pay. 34 tests. Flagship. |
 | P8 | Event-Triggered Automation | ⏳ building | — |
 | P9 | Multi-Agent Debate | ✅ working | Independent proposers; a tie is reported as a tie. 20 tests. |
 | P10 | Self-Reflective Auto-Eval | ✅ working | Keeps the best attempt, not the last; logged improvement metrics. 24 tests. |
