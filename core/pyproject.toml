@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentcore"
+version = "0.1.0"
+description = "Shared agent infrastructure: LLM client, cost metering, tracing, retry, storage."
+requires-python = ">=3.10"
+dependencies = [
+    "anthropic>=1.0",
+    "pydantic>=2.7",
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+embeddings = ["voyageai>=0.3"]
+
+[tool.setuptools.packages.find]
+include = ["agentcore*"]
