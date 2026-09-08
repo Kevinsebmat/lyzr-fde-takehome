@@ -1,6 +1,8 @@
-# CLAUDE.md
+# Architecture
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+How this repo is put together, and the reasoning behind the parts that are not
+obvious from reading one file. Start with the top-level `README.md` for what is
+built and what is skipped; this is the map for anyone changing the code.
 
 ## Commands
 
@@ -85,55 +87,11 @@ placeholder text rather than erroring.
 renders the PDF and *fails* if it runs to two pages, because the brief caps it
 at one.
 
-## What this repository is for
+## Conventions
 
-The Lyzr Forward Deployed Engineer take-home. Two deliverables, **weighted 40% / 60%**:
-
-1. **Part 1 — Client scoping note** (max 1 page, PDF or doc): pick *one* of the 12 projects and write a fund/don't-fund memo for a non-technical stakeholder. Must cover the customer problem in plain language, what "production-ready" means vs. a demo, 2–3 risks/trade-offs, and scope + timeline for a 2-week paid engagement. Graded on client-facing solutioning (40%).
-2. **Part 2 — Build**: attempt as many of the 12 projects as possible. P1–P11 are the real target; **P12 is bonus only and is never penalized if skipped**. Graded on technical execution (60%): breadth (how many run end-to-end), depth (does each handle the failure mode implied by its "what it shows"), code quality, production thinking (error handling, logging, retries, tests), and how prioritization trade-offs are communicated.
-
-Explicit grading stance: *"A small thing that works end-to-end beats a large thing that half-works."* Both deliverables are needed — a great build with no memo, or a great memo with no code, both fall short.
-
-## Required repository layout
-
-The submission format is fixed by the assignment, so keep to it:
-
-```
-README.md                 # top-level: what is FULLY WORKING / PARTIAL / SKIPPED and why
-docs/                     # assignment source; scoping note (PDF or doc) lands here
-p01-.../  p02-.../  ...   # ONE SUBFOLDER PER PROJECT ATTEMPTED
-  └── README.md           # per-project: setup + how to run
-```
-
-The top-level README's done/partial/skipped triage table is itself graded — it is not boilerplate. Skipped projects must be named and justified, not silently omitted.
-
-## The 12 projects, by track
-
-Each project is defined by the failure mode it must survive, not by its feature list. Build to the failure mode.
-
-**Track 1 — Reliability & Safety**
-- **P1 Structured Output Agent** — Pydantic/JSON schema enforcement, tool-response validation, retry on parse errors, logged validation failures. *Failure mode: nondeterministic LLM output.*
-- **P3 ReAct Planning Agent** — observe → think → act → reflect, max-iteration limits, self-critique, graceful degradation. *Failure mode: infinite loops.*
-- **P6 Human-in-the-Loop Approval Agent** — uncertainty detection → pause → request human input → resume with validated context, full audit trail. *Failure mode: unsafe autonomous action.*
-
-**Track 2 — Knowledge & Memory**
-- **P2 RAG Agent with Citation Grounding** — retrieval, answers with sources, low-confidence flagging, fallback to search. *Failure mode: hallucination.*
-- **P5 Memory-Enabled Conversational Agent** — short-term buffer + long-term vector recall, context compression, relevance scoring, cross-session sync. *Failure mode: amnesia across sessions.*
-
-**Track 3 — Orchestration & Multi-Agent**
-- **P4 Multi-Tool Orchestrator Agent** — dynamic tool registry, capability-based routing, permission scoping, parallel execution, conflict resolution.
-- **P9 Multi-Agent Debate System** — proposers, a critic, voting/consensus, aggregator synthesis with confidence.
-
-**Track 4 — Production & Cost Ops**
-- **P7 Cost-Aware Agent Router** — per-task token budgeting, model routing by complexity/cost, early exit on confidence, cost-per-decision analytics.
-- **P8 Event-Triggered Automation Agent** — webhook/queue listeners, idempotent execution, dead-letter handling, retry logic.
-- **P11 Production Agent with Observability** — tracing (LangSmith/Arize), latency/cost dashboards, alerting on loops/failures, canary testing, rollback.
-
-**Track 5 — Self-Improvement & Community**
-- **P10 Self-Reflective Agent with Auto-Eval** — execute → LLM-as-judge evaluation → critique → regenerate under constraints, logged improvement metrics.
-- **P12 Open Source Agent Framework Contribution** *(bonus)* — extend LangGraph/CrewAI/AutoGen with a new pattern, docs + demo, published benchmarks, PR + tutorial.
-
-## Working conventions for this repo
+Each project is defined by **the failure mode it must survive**, not by its
+feature list — that framing drives the code, the tests and the console. The
+per-project READMEs name the failure each one handles.
 
 - **Shared core, independent projects.** Each `pNN-*/` folder stays independently
   runnable from its own README, but they share `core/agentcore` rather than each
@@ -142,17 +100,16 @@ Each project is defined by the failure mode it must survive, not by its feature 
   the duplication risk is eleven half-working copies, and the shared chokepoint
   is what makes P7 (reroute by cost) and P11 (traces from every project)
   possible at all. Projects still must not import *each other*.
-- **Cost and iteration caps are features here, not defenses.** P3, P7, P9, and P10 are each graded on the limit itself (max iterations, token budget, consensus cutoff, regeneration cap). Make caps explicit and configurable rather than implicit.
-- **Structured logging is graded.** "Evidence of production thinking (error handling, logging, retries, tests)" is a scoring line. Log validation failures, retries, and cost per call in the projects where that is the point (P1, P7, P11).
+- **Caps are the feature, not a defence.** In P3, P7, P9 and P10 the limit *is*
+  the thing being demonstrated — max iterations, token budget, consensus cutoff,
+  regeneration cap. Keep them explicit constructor parameters with a stated
+  reason, never implicit constants buried in a loop.
+- **Log what you would need at 3am.** Validation failures with the offending
+  output, retries with the reason, cost per call. P1, P7 and P11 depend on those
+  records existing; a failure you cannot reproduce from the log is not
+  actionable.
 - Model ids are `claude-opus-5`, `claude-sonnet-5`, `claude-haiku-4-5` — no date
   suffixes. Pricing and per-model capability flags live in
   `core/agentcore/models.py` and were verified against the current price list
   rather than recalled; P7's whole business case is those numbers, so re-verify
   rather than edit from memory.
-
-## Deadline
-
-10 calendar days from receipt. Partial completion is expected; going quiet on
-unfinished projects is explicitly penalised relative to naming them — which is
-why the top-level README's triage table is generated from `make smoke` rather
-than written from memory.
