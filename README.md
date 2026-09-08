@@ -27,7 +27,7 @@ make test       # full test suite, deterministic and offline
 | P7 | Cost-Aware Router | ⏳ building | Flagship |
 | P8 | Event-Triggered Automation | ⏳ building | — |
 | P9 | Multi-Agent Debate | ⏳ building | — |
-| P10 | Self-Reflective Auto-Eval | ⏳ building | — |
+| P10 | Self-Reflective Auto-Eval | ✅ working | Keeps the best attempt, not the last; logged improvement metrics. 24 tests. |
 | P11 | Production Observability | ⏳ building | Flagship; reads traces from P1–P10 |
 | P12 | OSS Framework Contribution | ⛔ skipped | Bonus only. Deliberately cut — see below. |
 
