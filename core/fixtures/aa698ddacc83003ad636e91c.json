@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answerable\": false,\n  \"self_confidence\": 0.03,\n  \"claims\": []\n}",
+  "input_tokens": 284,
+  "output_tokens": 17,
+  "stop_reason": "end_turn"
+}

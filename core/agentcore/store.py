@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import sqlite3
 import threading
 from collections.abc import Iterator, Sequence
@@ -27,6 +28,17 @@ from typing import Any
 import numpy as np
 
 _LOCAL = threading.local()
+
+_WORD_RE = re.compile(r"[a-z0-9][a-z0-9\-']*")
+
+#: Function words carry no retrieval signal and, unremoved, let a long question
+#: match a long passage on grammar alone.
+_STOPWORDS = frozenset(
+    """a an and any are as at be been but by can could did do does for from get
+    had has have how i if in into is it its may me my no not of on or our out over
+    should so than that the their them then there these they this those to under up
+    was we were what when where which who why will with would you your""".split()
+)
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS documents (
@@ -114,15 +126,24 @@ class Embedder:
     waste money in a RAG demo, so the cache is keyed on (model, text) and lives
     in the same sqlite file as the chunks.
 
-    In mock mode the vectors are a deterministic hash projection — meaningless
-    semantically, but stable, offline, and enough for the retrieval *mechanics*
-    (ranking, thresholds, cache hits) to be exercised by tests.
+    Offline, vectors come from hashed bag-of-words (see `_lexical`). Not
+    semantic, but it ranks by shared vocabulary, which is enough for retrieval
+    *ordering* to be correct in a demo and for thresholds to mean something.
     """
 
     def __init__(self, model: str = "voyage-3", dim: int = 512):
         self.model = model
         self.dim = dim
         self._client = None
+
+    @property
+    def backend(self) -> str:
+        """Which vector space we're in. Part of the cache key, because mock and
+        real vectors are not interchangeable and must never share an entry."""
+        from . import mock
+
+        live = not mock.is_mock_mode() and bool(os.environ.get("VOYAGE_API_KEY"))
+        return self.model if live else "lexical-v1"
 
     def embed(self, texts: Sequence[str]) -> np.ndarray:
         if not texts:
@@ -154,13 +175,11 @@ class Embedder:
         return np.vstack([v for v in vectors if v is not None])
 
     def _key(self, text: str) -> str:
-        return hashlib.sha256(f"{self.model}\x00{text}".encode()).hexdigest()
+        return hashlib.sha256(f"{self.backend}\x00{text}".encode()).hexdigest()
 
     def _embed_uncached(self, texts: list[str]) -> list[np.ndarray]:
-        from . import mock
-
-        if mock.is_mock_mode() or not os.environ.get("VOYAGE_API_KEY"):
-            return [self._deterministic(t) for t in texts]
+        if self.backend != self.model:
+            return [self._lexical(t) for t in texts]
         if self._client is None:
             import voyageai
 
@@ -168,17 +187,33 @@ class Embedder:
         result = self._client.embed(texts, model=self.model, input_type="document")
         return [np.asarray(e, dtype=np.float32) for e in result.embeddings]
 
-    def _deterministic(self, text: str) -> np.ndarray:
-        """Hash the text into a unit vector. Same text -> same vector, always.
+    def _lexical(self, text: str) -> np.ndarray:
+        """Hashed bag-of-words: cosine here is vocabulary overlap.
 
-        Token-overlap-ish: seeding per token means texts sharing words land
-        nearer each other, so retrieval ordering in mock mode is not pure noise.
+        The earlier version summed a random gaussian per token, which encodes
+        token identity but spreads every token across all dimensions with
+        random signs — two passages sharing a few words got a small, noisy dot
+        product, and offline retrieval ranked the wrong chunk first. Feature
+        hashing puts each token in one bucket, so similarity tracks shared
+        vocabulary directly and the demo retrieves what a reader would expect.
+
+        Sublinear term weighting and stopword removal keep "how do I" from
+        outweighing "refund window".
         """
+        counts: dict[int, float] = {}
+        for token in _WORD_RE.findall(text.lower()):
+            if token in _STOPWORDS or len(token) < 2:
+                continue
+            bucket = (
+                int.from_bytes(hashlib.blake2b(token.encode(), digest_size=8).digest(), "big")
+                % self.dim
+            )
+            counts[bucket] = counts.get(bucket, 0.0) + 1.0
+
         vec = np.zeros(self.dim, dtype=np.float32)
-        for token in text.lower().split():
-            h = int.from_bytes(hashlib.md5(token.encode()).digest()[:8], "big")
-            rng = np.random.default_rng(h % (2**32))
-            vec += rng.standard_normal(self.dim, dtype=np.float32)
+        for bucket, count in counts.items():
+            vec[bucket] = 1.0 + np.log(count)  # sublinear: the 5th mention adds little
+
         norm = np.linalg.norm(vec)
         return vec / norm if norm else vec
 

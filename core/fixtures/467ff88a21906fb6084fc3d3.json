@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answerable\": true,\n  \"self_confidence\": 0.92,\n  \"claims\": [\n    {\n      \"text\": \"Northwind Cloud commits to 99.9% monthly uptime for the API and dashboard on Business and Enterprise plans.\",\n      \"citation_ids\": [\n        \"sla#0\"\n      ]\n    },\n    {\n      \"text\": \"Starter plans carry no uptime commitment.\",\n      \"citation_ids\": [\n        \"sla#0\"\n      ]\n    }\n  ]\n}",
+  "input_tokens": 266,
+  "output_tokens": 93,
+  "stop_reason": "end_turn"
+}

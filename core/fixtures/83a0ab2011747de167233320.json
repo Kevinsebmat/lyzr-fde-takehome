@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answerable\": true,\n  \"self_confidence\": 0.88,\n  \"claims\": [\n    {\n      \"text\": \"A token bucket allows short bursts up to twice the sustained limit for a maximum of ten seconds.\",\n      \"citation_ids\": [\n        \"ratelimits#1\"\n      ]\n    },\n    {\n      \"text\": \"After that, requests receive HTTP 429 with a Retry-After header.\",\n      \"citation_ids\": [\n        \"ratelimits#1\"\n      ]\n    }\n  ]\n}",
+  "input_tokens": 289,
+  "output_tokens": 100,
+  "stop_reason": "end_turn"
+}

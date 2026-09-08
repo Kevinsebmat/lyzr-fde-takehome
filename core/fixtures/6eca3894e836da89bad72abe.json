@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answerable\": true,\n  \"self_confidence\": 0.9,\n  \"claims\": [\n    {\n      \"text\": \"SAML 2.0 and OIDC are supported on Business and Enterprise plans.\",\n      \"citation_ids\": [\n        \"sso#0\"\n      ]\n    },\n    {\n      \"text\": \"SCIM 2.0 directory sync is Enterprise only.\",\n      \"citation_ids\": [\n        \"sso#0\"\n      ]\n    }\n  ]\n}",
+  "input_tokens": 274,
+  "output_tokens": 83,
+  "stop_reason": "end_turn"
+}

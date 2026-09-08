@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answerable\": true,\n  \"self_confidence\": 0.94,\n  \"claims\": [\n    {\n      \"text\": \"Audit logs are retained for 400 days.\",\n      \"citation_ids\": [\n        \"retention#0\"\n      ]\n    },\n    {\n      \"text\": \"Application logs are retained for 30 days.\",\n      \"citation_ids\": [\n        \"retention#0\"\n      ]\n    }\n  ]\n}",
+  "input_tokens": 292,
+  "output_tokens": 79,
+  "stop_reason": "end_turn"
+}

@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answerable\": true,\n  \"self_confidence\": 0.95,\n  \"claims\": [\n    {\n      \"text\": \"Customers on monthly plans may request a full refund within 14 days of a charge.\",\n      \"citation_ids\": [\n        \"refunds#0\"\n      ]\n    },\n    {\n      \"text\": \"Requests made after 14 days are declined automatically by billing.\",\n      \"citation_ids\": [\n        \"refunds#0\"\n      ]\n    }\n  ]\n}",
+  "input_tokens": 318,
+  "output_tokens": 95,
+  "stop_reason": "end_turn"
+}

@@ -19,7 +19,7 @@ make test       # full test suite, deterministic and offline
 | # | Project | Status | Notes |
 |---|---------|--------|-------|
 | P1 | Structured Output Agent | ✅ working | Repair loop, model escalation, two-sided tool contracts. 24 tests. |
-| P2 | RAG with Citation Grounding | ⏳ building | Flagship; subject of the scoping note |
+| P2 | RAG with Citation Grounding | ✅ working | Verified citations, 4-way answer/caveat/fallback/refuse. 28 tests. Flagship + scoping-note subject. |
 | P3 | ReAct Planning Agent | ⏳ building | — |
 | P4 | Multi-Tool Orchestrator | ⏳ building | — |
 | P5 | Memory-Enabled Agent | ⏳ building | — |
