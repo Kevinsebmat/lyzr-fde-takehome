@@ -34,7 +34,7 @@ the code can't quietly drift apart.
 | P9 | Multi-Agent Debate | ✅ working | 20 | Independent proposers. A tie is reported as a tie. |
 | P10 | Self-Reflective Auto-Eval | ✅ working | 24 | Keeps the best attempt rather than the last, with improvement logged |
 | P11 | Production Observability | ✅ working | 35 | Dashboards over ~400 real spans from P1–P10. Flagship. |
-| P12 | OSS Framework Contribution | ⛔ skipped | — | Bonus only. Reasoning below. |
+| P12 | OSS Framework Contribution | ⛔ skipped | — | Bonus only.|
 
 All eleven required projects run end to end. 326 tests: 296 across the projects,
 30 on the shared core. `make lint` is clean.
@@ -62,11 +62,7 @@ fully once you set an API key.
 
 ## Why I skipped P12
 
-It's bonus credit with no penalty attached. Getting a PR merged upstream depends
-on a maintainer's schedule, which doesn't fit inside ten days, and the time would
-have come out of the eleven projects that actually count. I'd rather say that
-than leave a silent gap.
-
+Its bonus credit.
 ---
 
 ## Part 1 — the scoping note
