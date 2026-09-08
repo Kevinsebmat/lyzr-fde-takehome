@@ -22,7 +22,7 @@ make test       # full test suite, deterministic and offline
 | P2 | RAG with Citation Grounding | ✅ working | Verified citations, 4-way answer/caveat/fallback/refuse. 28 tests. Flagship + scoping-note subject. |
 | P3 | ReAct Planning Agent | ✅ working | Four independent stopping conditions; every exit still answers. 20 tests. |
 | P4 | Multi-Tool Orchestrator | ⏳ building | — |
-| P5 | Memory-Enabled Agent | ⏳ building | — |
+| P5 | Memory-Enabled Agent | ✅ working | Durable facts with supersession; a corrected fact stops being retrievable. 23 tests. |
 | P6 | Human-in-the-Loop Approval | ⏳ building | — |
 | P7 | Cost-Aware Router | ⏳ building | Flagship |
 | P8 | Event-Triggered Automation | ⏳ building | — |
