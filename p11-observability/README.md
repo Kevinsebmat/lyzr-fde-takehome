@@ -5,23 +5,30 @@ that every conventional dashboard reports as healthy.
 
 Status: **working end-to-end.** 35 tests, all offline.
 
-## It reads real traces, not its own
+## Setup & run
 
-Every LLM call, tool call and agent step in **P1–P10** goes through
-`agentcore.tracing`. So `make smoke` alone produces ~800 spans across eight
-projects, and everything below is computed from that actual traffic — not a toy
-trace this project generated to have something to draw.
+This project reads what the other ten emit, so it needs traces before it has
+anything to show. `make smoke` produces them.
 
 ```bash
-make install && make smoke     # from the repo root — generates the traces
+make install    # from the repo root — creates the `lyzer` conda env
+make smoke      # generates ~800 spans across eight projects
+
 python -m p11_observability.cli dashboard
 python -m p11_observability.cli alerts
 python -m p11_observability.cli errors
 python -m p11_observability.cli runs
 python -m p11_observability.cli show <run-id>
 python -m p11_observability.cli canary --demo
-python ../scripts/smoke.py p11 && python -m pytest tests -q
+python ../scripts/smoke.py p11
+python -m pytest tests -q
 ```
+
+## It reads real traces, not its own
+
+Every LLM call, tool call and agent step in **P1–P10** goes through
+`agentcore.tracing`, so everything below is computed from that actual traffic —
+not a toy trace this project generated to have something to draw.
 
 ```
 798 spans · 104 runs · 8 projects
