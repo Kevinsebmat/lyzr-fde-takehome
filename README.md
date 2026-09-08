@@ -28,7 +28,7 @@ make test       # full test suite, deterministic and offline
 | P8 | Event-Triggered Automation | ✅ working | Idempotency enforced by a unique index; dead letters replayable. 27 tests. |
 | P9 | Multi-Agent Debate | ✅ working | Independent proposers; a tie is reported as a tie. 20 tests. |
 | P10 | Self-Reflective Auto-Eval | ✅ working | Keeps the best attempt, not the last; logged improvement metrics. 24 tests. |
-| P11 | Production Observability | ⏳ building | Flagship; reads traces from P1–P10 |
+| P11 | Production Observability | ✅ working | Dashboards over ~800 real spans from P1–P10; auto-rollback canaries. 35 tests. Flagship. |
 | P12 | OSS Framework Contribution | ⛔ skipped | Bonus only. Deliberately cut — see below. |
 
 **Part 1 — Client scoping note:** `docs/scoping-note-p2-rag.pdf` *(pending)*
