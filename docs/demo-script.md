@@ -136,7 +136,7 @@ python -m p11_observability.cli alerts
 python -m p11_observability.cli canary --demo
 ```
 
-> These are ~800 real spans from the other ten projects, because every call in
+> These are ~400 real spans from the other ten projects, because every call in
 > this repo goes through one tracer. This isn't a trace I generated to have
 > something to draw.
 

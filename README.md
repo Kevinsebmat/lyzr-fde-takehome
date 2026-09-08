@@ -32,7 +32,7 @@ check cannot drift apart.
 | P8 | Event Automation | ✅ working | 27 | Idempotency as a unique index; replayable dead letters |
 | P9 | Multi-Agent Debate | ✅ working | 20 | Independent proposers; a tie reported as a tie |
 | P10 | Self-Reflective Auto-Eval | ✅ working | 24 | Keeps the best attempt, not the last; logged improvement metrics |
-| P11 | Production Observability | ✅ working | 35 | Dashboards over ~800 real spans from P1–P10 — **flagship** |
+| P11 | Production Observability | ✅ working | 35 | Dashboards over ~400 real spans from P1–P10 — **flagship** |
 | P12 | OSS Framework Contribution | ⛔ **skipped** | — | Bonus only. Reasoning below. |
 
 **11 of 11 required projects run end-to-end.** 326 tests — 296 across the

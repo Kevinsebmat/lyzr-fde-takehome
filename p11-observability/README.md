@@ -12,7 +12,7 @@ anything to show. `make smoke` produces them.
 
 ```bash
 make install    # from the repo root — creates the `lyzer` conda env
-make smoke      # generates ~800 spans across eight projects
+make smoke      # generates ~400 spans across eight projects
 
 python -m p11_observability.cli dashboard
 python -m p11_observability.cli alerts

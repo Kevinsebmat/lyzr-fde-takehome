@@ -18,6 +18,7 @@ from .analysis import (
     error_shapes,
     load,
     overview,
+    resolve_trace_file,
     slowest_runs,
     trace,
 )
@@ -41,6 +42,8 @@ def _spans():
             "first — it generates ~400 spans across eight projects."
         )
         raise typer.Exit(1)
+    if (path := resolve_trace_file()) is not None:
+        console.print(f"[dim]reading {path}[/dim]")
     return spans
 
 

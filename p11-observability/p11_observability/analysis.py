@@ -19,15 +19,41 @@ ticket someone can pick up.
 from __future__ import annotations
 
 import math
+import os
 import statistics
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from agentcore import tracing
 
 
+#: Where traces can legitimately live. `make smoke` writes to `.smoke/` so a
+#: smoke run cannot clobber a demo database, which means the obvious
+#: `make smoke && cli dashboard` sequence would otherwise find nothing — this
+#: project reads what the other ten emit, so it has to know where they put it.
+def trace_candidates() -> list[Path]:
+    explicit = os.environ.get("AGENTCORE_TRACE_FILE")
+    if explicit:
+        return [Path(explicit)]
+
+    here = Path.cwd()
+    roots = [here, here.parent]  # also works from inside a pNN- folder
+    return [root / name
+            for root in roots
+            for name in ("traces.jsonl", ".smoke/traces.jsonl")]
+
+
+def resolve_trace_file() -> Path | None:
+    """First candidate that exists and has content."""
+    for candidate in trace_candidates():
+        if candidate.exists() and candidate.stat().st_size > 0:
+            return candidate
+    return None
+
+
 def load(path=None) -> list[dict]:
-    return tracing.read_spans(path)
+    return tracing.read_spans(path or resolve_trace_file())
 
 
 def percentile(values: list[float], p: float) -> float:
