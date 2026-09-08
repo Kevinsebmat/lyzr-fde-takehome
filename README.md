@@ -80,6 +80,14 @@ the documents and the right next spend is fixing them, not more engineering.
 
 ---
 
+## Demo
+
+**[`docs/demo-script.md`](docs/demo-script.md)** — a walkthrough under ten
+minutes through the strongest builds, with the exact commands. Every one runs
+offline. Each was executed as written before being committed.
+
+---
+
 ## Three decisions worth explaining
 
 ### Why there is a shared `core/` despite one-folder-per-project
