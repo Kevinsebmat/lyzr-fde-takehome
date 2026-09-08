@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"severity\": \"critical\",\n  \"category\": \"outage\",\n  \"summary\": \"Checkout returns HTTP 500 at the payment step for every customer since 09:00 UTC.\",\n  \"customer_sentiment\": -0.85,\n  \"affected_users\": 12000,\n  \"action_items\": [\n    {\n      \"description\": \"Roll back the payment service to the last known good deploy\",\n      \"owner_team\": \"payments\",\n      \"due_within_hours\": 1\n    },\n    {\n      \"description\": \"Confirm the $5,000 downtime credit with the enterprise account manager\",\n      \"owner_team\": \"billing\",\n      \"due_within_hours\": 24\n    }\n  ],\n  \"requires_human_review\": true,\n  \"refund_amount_usd\": 5000.0\n}",
+  "input_tokens": 91,
+  "output_tokens": 155,
+  "stop_reason": "end_turn"
+}

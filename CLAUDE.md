@@ -63,7 +63,27 @@ Eleven projects over one shared core. `core/agentcore/` is the spine:
 brief; the importable package inside is underscored (`p01_structured_output/`).
 Root `conftest.py` bridges the two onto `sys.path`. Each project exposes
 `smoke.py:smoke()` returning a summary dict and raising on failure — that is what
-`scripts/smoke.py` calls.
+`scripts/smoke.py` calls — and a `cli.py`, which is its canonical interface.
+
+**Server and console.** `server/main.py` mounts every project into one FastAPI
+app. P1, P2 and P8 own routers inside their own packages (P8's webhook *is* the
+product); the rest live in `server/routers.py`, because a near-empty `api.py` per
+project is filing, not structure. `web/` is a Next.js console driving them all —
+the consolidated demo surface, not the primary interface. `server/main.py`
+inlines its `sys.path` setup rather than importing `conftest`: an import sorter
+will move an import statement, and moving that one breaks every project import
+below it.
+
+**Cassettes.** `scripts/seed_cassettes.py` (`make seed`) writes the demo
+fixtures, keyed on the exact request each agent builds. It validates payloads
+against their schemas and fails loudly when a corpus edit leaves a P2 cassette
+citing a chunk retrieval no longer returns. Re-run it after changing a corpus, a
+system prompt, or a chunker — a stale cassette silently degrades a demo to
+placeholder text rather than erroring.
+
+**The memo.** `docs/scoping-note-p2-rag.md` is the source of truth; `make memo`
+renders the PDF and *fails* if it runs to two pages, because the brief caps it
+at one.
 
 ## What this repository is for
 
@@ -115,11 +135,24 @@ Each project is defined by the failure mode it must survive, not by its feature 
 
 ## Working conventions for this repo
 
-- **Per-project isolation.** Each `pNN-*/` folder must be independently runnable from its own README with its own dependencies. Cross-project imports create a single point of failure across the whole submission — prefer duplicating a small helper over coupling two projects.
+- **Shared core, independent projects.** Each `pNN-*/` folder stays independently
+  runnable from its own README, but they share `core/agentcore` rather than each
+  carrying a private copy of an LLM client, retry loop, cost meter and tracer.
+  That was a deliberate reversal of the obvious "duplicate for isolation" rule:
+  the duplication risk is eleven half-working copies, and the shared chokepoint
+  is what makes P7 (reroute by cost) and P11 (traces from every project)
+  possible at all. Projects still must not import *each other*.
 - **Cost and iteration caps are features here, not defenses.** P3, P7, P9, and P10 are each graded on the limit itself (max iterations, token budget, consensus cutoff, regeneration cap). Make caps explicit and configurable rather than implicit.
 - **Structured logging is graded.** "Evidence of production thinking (error handling, logging, retries, tests)" is a scoring line. Log validation failures, retries, and cost per call in the projects where that is the point (P1, P7, P11).
-- When building agents against Claude, default to the latest models (Opus 5 `claude-opus-5`, Sonnet 5 `claude-sonnet-5`, Haiku 4.5 `claude-haiku-4-5-20251001`) — P7's cost router in particular depends on real current pricing tiers, so verify pricing rather than recalling it.
+- Model ids are `claude-opus-5`, `claude-sonnet-5`, `claude-haiku-4-5` — no date
+  suffixes. Pricing and per-model capability flags live in
+  `core/agentcore/models.py` and were verified against the current price list
+  rather than recalled; P7's whole business case is those numbers, so re-verify
+  rather than edit from memory.
 
 ## Deadline
 
-10 calendar days from receipt. Partial completion is expected; going quiet on unfinished projects is explicitly penalized relative to naming them.
+10 calendar days from receipt. Partial completion is expected; going quiet on
+unfinished projects is explicitly penalised relative to naming them — which is
+why the top-level README's triage table is generated from `make smoke` rather
+than written from memory.

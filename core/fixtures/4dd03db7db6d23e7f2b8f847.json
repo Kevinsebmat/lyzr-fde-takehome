@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answer\": \"INV-8842\",\n  \"confidence\": 0.96,\n  \"needs_stronger_model\": false\n}",
+  "input_tokens": 50,
+  "output_tokens": 20,
+  "stop_reason": "end_turn"
+}

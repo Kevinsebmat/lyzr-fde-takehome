@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answer\": \"billing\",\n  \"confidence\": 0.94,\n  \"needs_stronger_model\": false\n}",
+  "input_tokens": 50,
+  "output_tokens": 20,
+  "stop_reason": "end_turn"
+}

@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answer\": \"Invoice INV-8842, total $1,204.00.\",\n  \"confidence\": 0.95,\n  \"needs_stronger_model\": false\n}",
+  "input_tokens": 50,
+  "output_tokens": 26,
+  "stop_reason": "end_turn"
+}

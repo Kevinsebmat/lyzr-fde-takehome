@@ -8,7 +8,7 @@ PIP        := $(CONDA_BASE)/envs/$(ENV)/bin/pip
 export LLM_PROVIDER ?= mock
 
 .DEFAULT_GOAL := help
-.PHONY: help install test smoke lint dev demo-reset clean
+.PHONY: help install test smoke lint dev web-build seed memo demo-reset clean
 
 help:  ## Show this help
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) | sort | \
@@ -30,8 +30,20 @@ lint:  ## Ruff check
 	$(PY) -m ruff check .
 
 dev:  ## FastAPI (:8000) + Next.js console (:3000)
-	$(PY) -m uvicorn server.main:app --reload --port 8000 & \
-	cd web && pnpm dev
+	@echo "API on :8000, console on :3000 — ctrl-c stops both"
+	@trap 'kill 0' EXIT INT TERM; \
+	 $(PY) -m uvicorn server.main:app --reload --port 8000 & \
+	 (cd web && pnpm dev) & \
+	 wait
+
+web-build:  ## Type-check and build the console
+	cd web && pnpm install --frozen-lockfile && pnpm build
+
+seed:  ## Regenerate the demo cassettes from their markdown/source definitions
+	$(PY) scripts/seed_cassettes.py
+
+memo:  ## Rebuild the Part 1 scoping note PDF (requires pandoc + Chrome)
+	./scripts/build_memo.sh
 
 demo-reset:  ## Clear traces and the sqlite db for a clean demo run
 	rm -f traces.jsonl agentcore.db agentcore.db-wal agentcore.db-shm

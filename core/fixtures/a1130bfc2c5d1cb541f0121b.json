@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"answer\": \"Fund streaming, staged over two quarters. Streaming cuts time-to-detect a bad record from ~12h to minutes, which is where the operational risk actually sits; batch is cheaper per record but the cost gap narrows once you price the incident response the delay causes. Batch stays defensible if your downstream consumers are themselves daily \\u2014 then streaming buys latency nobody consumes.\",\n  \"confidence\": 0.87,\n  \"needs_stronger_model\": false\n}",
+  "input_tokens": 59,
+  "output_tokens": 115,
+  "stop_reason": "end_turn"
+}

@@ -63,9 +63,7 @@ def seed_p01() -> int:
     from p01_structured_output.schemas import TicketTriage
 
     ticket = (ROOT / "p01-structured-output" / "sample_ticket.txt").read_text()
-    record(
-        MODEL, SYSTEM, ticket, TicketTriage,
-        {
+    triage = {
             "severity": "critical",
             "category": "outage",
             "summary": "Checkout returns HTTP 500 at the payment step for every "
@@ -82,8 +80,13 @@ def seed_p01() -> int:
             ],
             "requires_human_review": True,
             "refund_amount_usd": 5000.0,
-        },
-    )
+    }
+    # Both the raw file and its stripped form. The CLI passes the file verbatim
+    # and the web console holds the same text as a string literal without the
+    # trailing newline — a whitespace difference should not decide whether the
+    # demo shows a real answer or a placeholder.
+    for variant in {ticket, ticket.strip()}:
+        record(MODEL, SYSTEM, variant, TicketTriage, triage)
     return 1
 
 
@@ -205,7 +208,65 @@ def seed_p06() -> int:
     return len(P06_CASES)
 
 
-SEEDERS = {"p01": seed_p01, "p02": seed_p02, "p06": seed_p06}
+# ---------- p07 ----------
+
+#: (task, model the router will pick, answer). The model matters: a cassette
+#: recorded against the wrong tier never matches, and the router then escalates
+#: on the stub's 0.0 confidence — which looks exactly like a routing bug.
+P07_CASES: list[tuple[str, str, dict]] = [
+    (
+        "Extract the invoice number from: INV-8842, $1,204.00",
+        "claude-haiku-4-5",
+        {"answer": "INV-8842", "confidence": 0.96, "needs_stronger_model": False},
+    ),
+    (
+        "Extract the invoice number and total from this line: INV-8842, $1,204.00",
+        "claude-haiku-4-5",
+        {"answer": "Invoice INV-8842, total $1,204.00.", "confidence": 0.95,
+         "needs_stronger_model": False},
+    ),
+    (
+        "Classify this ticket as billing or technical: 'my card was charged twice'",
+        "claude-haiku-4-5",
+        {"answer": "billing", "confidence": 0.94, "needs_stronger_model": False},
+    ),
+    (
+        "Compare running our ingestion as nightly batch against streaming. Analyse "
+        "the trade-offs for cost, operational risk and time to detect a bad record, "
+        "and recommend which we should fund next quarter. Why would the other "
+        "option be defensible?",
+        "claude-opus-5",
+        {
+            "answer": "Fund streaming, staged over two quarters. Streaming cuts "
+                      "time-to-detect a bad record from ~12h to minutes, which is "
+                      "where the operational risk actually sits; batch is cheaper "
+                      "per record but the cost gap narrows once you price the "
+                      "incident response the delay causes. Batch stays defensible "
+                      "if your downstream consumers are themselves daily — then "
+                      "streaming buys latency nobody consumes.",
+            "confidence": 0.87,
+            "needs_stronger_model": False,
+        },
+    ),
+]
+
+
+def seed_p07() -> int:
+    from p07_cost_router.router import SYSTEM, Answer, classify
+
+    for task, expected_model, payload in P07_CASES:
+        tier = {"simple": "claude-haiku-4-5", "moderate": "claude-sonnet-5",
+                "hard": "claude-opus-5"}[classify(task).complexity.value]
+        if tier != expected_model:
+            _problems.append(
+                f"p07 {task[:45]!r} routes to {tier}, but the cassette is recorded "
+                f"for {expected_model} — it would never be replayed"
+            )
+        record(tier, SYSTEM, task, Answer, payload)
+    return len(P07_CASES)
+
+
+SEEDERS = {"p01": seed_p01, "p02": seed_p02, "p06": seed_p06, "p07": seed_p07}
 
 
 def main() -> int:
