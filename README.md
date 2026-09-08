@@ -34,7 +34,7 @@ the code can't quietly drift apart.
 | P9 | Multi-Agent Debate | ✅ working | 20 | Independent proposers. A tie is reported as a tie. |
 | P10 | Self-Reflective Auto-Eval | ✅ working | 24 | Keeps the best attempt rather than the last, with improvement logged |
 | P11 | Production Observability | ✅ working | 35 | Dashboards over ~400 real spans from P1–P10. Flagship. |
-| P12 | OSS Framework Contribution | ⛔ skipped | — | Bonus only.|
+| P12 | OSS Framework Contribution | ⛔ skipped | — | Bonus only. |
 
 All eleven required projects run end to end. 326 tests: 296 across the projects,
 30 on the shared core. `make lint` is clean.
@@ -62,7 +62,8 @@ fully once you set an API key.
 
 ## Why I skipped P12
 
-Its bonus credit.
+It's bonus credit.
+
 ---
 
 ## Part 1 — the scoping note
@@ -78,10 +79,9 @@ more engineering.
 
 ## Demo
 
-[`docs/demo-script.md`](docs/demo-script.md) is a walkthrough under ten minutes
-covering the strongest builds, with the exact commands. Everything runs offline.
-I ran each command as written before committing the script, which is how I found
-two of the bugs listed below.
+I'll walk through the strongest builds live. Everything runs offline, so
+`make smoke` followed by the CLIs in P2, P7, P6, P8 and P11 covers it in under
+ten minutes.
 
 ---
 
@@ -152,7 +152,7 @@ p01-…/ … p11-…/    one folder per project, each with its own README and te
 server/            one FastAPI app that mounts every project
 web/               the console, which is the consolidated demo surface
 scripts/smoke.py   the check behind the table above
-docs/              the brief, the scoping note, the demo script
+docs/              the assignment brief and the scoping note
 ```
 
 ## Requirements
