@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"action\": \"issue_refund\",\n  \"arguments\": {\n    \"order_id\": \"ORD-1\",\n    \"amount\": 120.0\n  },\n  \"rationale\": \"Clear duplicate charge, well inside the auto-approval limit.\",\n  \"confidence\": 0.96,\n  \"needs_human\": false\n}",
+  "input_tokens": 50,
+  "output_tokens": 55,
+  "stop_reason": "end_turn"
+}

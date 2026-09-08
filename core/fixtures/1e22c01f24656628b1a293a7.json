@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"action\": \"delete_account\",\n  \"arguments\": {\n    \"account_id\": \"ACC-9\"\n  },\n  \"rationale\": \"Customer asked for deletion, but only verbally over chat.\",\n  \"confidence\": 0.55,\n  \"needs_human\": true\n}",
+  "input_tokens": 50,
+  "output_tokens": 50,
+  "stop_reason": "end_turn"
+}

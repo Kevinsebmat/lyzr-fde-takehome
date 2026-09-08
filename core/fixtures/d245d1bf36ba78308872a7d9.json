@@ -1,0 +1,6 @@
+{
+  "text": "{\n  \"action\": \"issue_refund\",\n  \"arguments\": {\n    \"order_id\": \"ORD-2\",\n    \"amount\": 48200.0,\n    \"account\": \"Wexler Industries\"\n  },\n  \"rationale\": \"SLA credit for a 2h20m outage; 99.68% uptime against a 99.9% commitment gives a 20% credit.\",\n  \"confidence\": 0.88,\n  \"needs_human\": true\n}",
+  "input_tokens": 50,
+  "output_tokens": 72,
+  "stop_reason": "end_turn"
+}
