@@ -25,7 +25,7 @@ make test       # full test suite, deterministic and offline
 | P5 | Memory-Enabled Agent | ✅ working | Durable facts with supersession; a corrected fact stops being retrievable. 23 tests. |
 | P6 | Human-in-the-Loop Approval | ✅ working | Pause is a DB row, not an await; survives restart. Append-only audit. 29 tests. |
 | P7 | Cost-Aware Router | ✅ working | Break-even arithmetic; says plainly when routing does NOT pay. 34 tests. Flagship. |
-| P8 | Event-Triggered Automation | ⏳ building | — |
+| P8 | Event-Triggered Automation | ✅ working | Idempotency enforced by a unique index; dead letters replayable. 27 tests. |
 | P9 | Multi-Agent Debate | ✅ working | Independent proposers; a tie is reported as a tie. 20 tests. |
 | P10 | Self-Reflective Auto-Eval | ✅ working | Keeps the best attempt, not the last; logged improvement metrics. 24 tests. |
 | P11 | Production Observability | ⏳ building | Flagship; reads traces from P1–P10 |

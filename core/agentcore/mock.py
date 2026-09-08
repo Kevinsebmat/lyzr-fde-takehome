@@ -116,8 +116,10 @@ class MockProvider:
         if schema is not None:
             body = json.dumps(_schema_stub(schema))
         else:
-            last = _last_user_text(messages)
-            body = f"[mock:{key}] offline reply to: {last[:160]}"
+            # Short and clearly labelled rather than an echo of the prompt.
+            # Echoing made offline transcripts unreadable and, worse, looked
+            # enough like a real answer to be mistaken for one.
+            body = f"(offline placeholder — no cassette for request {key})"
         return MockResponse(text=body, output_tokens=max(20, len(body) // 4))
 
     def record(self, key: str, response: dict) -> None:

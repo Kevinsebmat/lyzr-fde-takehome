@@ -83,7 +83,7 @@ def demo(user: str = typer.Option("demo-wexler", "--user", "-u")):
         "Thanks, that's helpful!",
     ):
         console.print(f"[bold]user[/bold] {msg}")
-        chat.callback(msg, user=user, show_memory=True)  # type: ignore[misc]
+        chat(msg, user=user, show_memory=True)
 
     agent.end_session()
     console.print("[dim]— session ended: transcript cleared, facts kept —[/dim]")
@@ -95,10 +95,10 @@ def demo(user: str = typer.Option("demo-wexler", "--user", "-u")):
         "So where is our data?",
     ):
         console.print(f"[bold]user[/bold] {msg}")
-        chat.callback(msg, user=user, show_memory=True)  # type: ignore[misc]
+        chat(msg, user=user, show_memory=True)
 
     console.rule("final memory")
-    facts.callback(user=user, show_all=True)  # type: ignore[misc]
+    facts(user=user, show_all=True)
 
 
 if __name__ == "__main__":
