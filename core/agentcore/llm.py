@@ -40,6 +40,9 @@ class Reply:
     stop_reason: str = "end_turn"
     tool_calls: list[dict] = field(default_factory=list)
     attempts: int = 1
+    #: Validation errors from earlier attempts, oldest first. Non-empty on a
+    #: successful `parse` means the repair loop did work worth reporting.
+    failures: list[str] = field(default_factory=list)
 
     @property
     def refused(self) -> bool:
@@ -190,6 +193,7 @@ class LLM:
                     continue
 
                 reply.attempts = attempt
+                reply.failures = list(failures)
                 sp.attrs.update(attempts=attempt, failures=failures, model=model)
                 return parsed, reply
 

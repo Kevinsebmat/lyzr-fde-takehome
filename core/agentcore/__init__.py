@@ -5,6 +5,7 @@ a retry loop, a cost meter and a trace writer eleven times. See the top-level
 README for why a shared core coexists with the one-folder-per-project layout.
 """
 
+from .bootstrap import bootstrap, credentials_available
 from .cost import Budget, BudgetExceeded, Usage, baseline_comparison, estimate_cost
 from .llm import LLM, Reply, default_llm
 from .models import DEFAULT_MODEL, LADDER, MODEL_REGISTRY, ModelSpec, next_model_up, spec
@@ -20,6 +21,7 @@ from .retry import (
 
 __all__ = [
     "LLM", "Reply", "default_llm",
+    "bootstrap", "credentials_available",
     "Budget", "BudgetExceeded", "Usage", "estimate_cost", "baseline_comparison",
     "MODEL_REGISTRY", "LADDER", "DEFAULT_MODEL", "ModelSpec", "spec", "next_model_up",
     "AgentError", "TransientError", "ParseError", "PolicyError", "FatalError",

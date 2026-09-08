@@ -40,3 +40,7 @@ target-version = "py310"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# typer.Option/Argument in defaults is the framework's required idiom, not a bug.
+"**/cli.py" = ["B008"]

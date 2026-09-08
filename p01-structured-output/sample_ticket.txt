@@ -1,0 +1,7 @@
+Subject: URGENT - checkout completely down
+
+Our entire checkout has been failing since 09:00 UTC. Every customer hitting the
+payment step gets a 500 error. We are an enterprise account (ACC-1001) and this
+is affecting roughly 12,000 users. This is costing us real money every minute.
+
+We want a credit for the downtime - at least $5,000. Please escalate immediately.

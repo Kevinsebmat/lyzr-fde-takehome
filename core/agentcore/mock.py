@@ -140,7 +140,14 @@ def _last_user_text(messages: list) -> str:
 
 
 def _schema_stub(schema: Any) -> Any:
-    """Minimal instance satisfying a JSON schema, so Pydantic validation passes."""
+    """A schema-*valid* instance, not merely a schema-shaped one.
+
+    Constraints have to be honoured — `minLength`, `minimum`, `minItems` and
+    friends. A stub that ignores them fails validation, which sends the repair
+    loop round three times and then reports a failure that has nothing to do
+    with the project being smoked. Getting this right is what lets every
+    project with a constrained schema run offline.
+    """
     if hasattr(schema, "model_json_schema"):
         schema = schema.model_json_schema()
     if not isinstance(schema, dict):
@@ -162,24 +169,84 @@ def _schema_stub(schema: Any) -> Any:
             return node["const"]
         if node.get("enum"):
             return node["enum"][0]
+
         t = node.get("type")
         if isinstance(t, list):
             t = next((x for x in t if x != "null"), "string")
+
         if t == "object":
             props = node.get("properties", {})
             required = node.get("required", list(props))
             return {k: build(v) for k, v in props.items() if k in required}
+
         if t == "array":
-            return [build(node["items"])] if "items" in node else []
-        return {
-            "string": "mock",
-            "integer": 0,
-            "number": 0.0,
-            "boolean": False,
-            "null": None,
-        }.get(t, None)
+            item = node.get("items")
+            n = max(int(node.get("minItems", 1)), 1)
+            n = min(n, int(node.get("maxItems", n)))
+            return [build(item) for _ in range(n)] if item else []
+
+        if t == "string":
+            return _stub_string(node)
+        if t in ("integer", "number"):
+            return _stub_number(node, integral=t == "integer")
+        if t == "boolean":
+            return False
+        return None
 
     return build(schema)
+
+
+def _stub_string(node: dict) -> str:
+    """A string long enough for `minLength` and matching a simple `pattern`."""
+    if (pattern := node.get("pattern")):
+        if (literal := _literal_from_pattern(pattern)) is not None:
+            return literal
+    fmt = node.get("format")
+    base = {
+        "date": "2026-01-01",
+        "date-time": "2026-01-01T00:00:00Z",
+        "email": "mock@example.com",
+        "uri": "https://example.com",
+    }.get(fmt, "mock value")
+    lo, hi = int(node.get("minLength", 0)), node.get("maxLength")
+    if len(base) < lo:
+        base = (base + " placeholder text")[:lo] if lo <= 40 else "x" * lo
+        while len(base) < lo:
+            base += "x"
+    if hi is not None and len(base) > int(hi):
+        base = base[: int(hi)]
+    return base
+
+
+def _literal_from_pattern(pattern: str) -> str | None:
+    """Satisfy the narrow anchored patterns real schemas use (e.g. `^ACC-\\d{4}$`).
+
+    Anything more exotic falls through to the plain string stub and, if it
+    genuinely matters, wants a recorded cassette rather than a generated guess.
+    """
+    import re
+
+    m = re.fullmatch(r"\^([A-Za-z0-9_\-]*)\\d\{(\d+)(?:,\d+)?\}\$", pattern)
+    if m:
+        return m.group(1) + "0" * int(m.group(2))
+    return None
+
+
+def _stub_number(node: dict, *, integral: bool) -> float | int:
+    """Pick a value inside [minimum, maximum], preferring 0 when it is legal."""
+    lo = node.get("minimum", node.get("exclusiveMinimum"))
+    hi = node.get("maximum", node.get("exclusiveMaximum"))
+    if "exclusiveMinimum" in node and lo is not None:
+        lo = lo + 1
+    if "exclusiveMaximum" in node and hi is not None:
+        hi = hi - 1
+
+    value: float = 0.0
+    if lo is not None and value < lo:
+        value = float(lo)
+    if hi is not None and value > hi:
+        value = float(hi)
+    return int(value) if integral else value
 
 
 #: Process-wide instance so tests can script the provider the agent will use.
